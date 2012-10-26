@@ -1,0 +1,91 @@
+\section{Introduction}\label{sec:intro}
+
+% P1: Motivation. 
+% - What is the problem area you are working in and why is it important? 
+% - Why is the problem of interest and importance to the larger community?
+Recommender systems have become a hot research area in recent years and 
+  many innovative approaches have been proposed both scientifically and commercially. 
+Many recommender systems deal with books and daily commodities; 
+  they need to be more efficient and accurate, and cover more fields.
+Online trading is an overwhelming trend and E-commerce is a promising field. 
+For many businesses, online opinion has turned into a kind of virtual currency 
+  that can make or break a product in the marketplace \cite{Wright09}. 
+There are so many items (products) in E-commerce systems that 
+  picking an item is time-consuming for individuals.
+Therefore recommender systems are key to the success of such E-commerce systems, 
+  and shortening the time for an individual means improving the 
+  throughput of the E-commerce system, thus contributing more transactions.
+
+% P2: What is the specific problem considered in this paper? 
+The soaring E-commerce industry demands recommender systems 
+  with higher efficiency and accuracy, as well as support for more 
+  personalized recommendation.
+Personalized recommendation can be achieved by using data mining techniques on 
+  massive amount of user profiles and behaviors (so-called collaboration) 
+  regardless of the features of recommended items themselves. 
+However, this kind of personalized recommendation is not applicable to 
+  personalized apparel recommendation where the choices of people with similar interests 
+  are sensitive to apparel particulars and may differ in case of only tiny differences. 
+In this case, it is essential to capture as many features as possible 
+  which are associated with both the clothes themselves and the user's preference 
+  so that the personalized recommendation can be achieved in better performance. 
+
+% P3: Summarize what are the main contributions of your paper.
+% - What is the general approach taken? 
+% - Why are the specific results significant?
+In this paper, we propose a novel idea and framework for personalized apparel recommendation
+  which combines both item images and textual labels by using sparse coding and 
+  support vector machine (SVM). 
+Sparse coding provides a class of algorithms for finding succinct representations of stimuli; 
+  given only unlabeled input data, it learns basis functions that capture higher-level features 
+  in the data \cite{Lee07}.
+SVM is a widely used machine learning method for classification and regression analysis,
+  based on the principle of structural risk minimization, which performs well when applied to 
+  data outside the training set \cite{El02}.
+
+% P4: What are the differences in what you are doing, and what others have done?
+% > In separate subsection `Related Work'
+Given the images, the textual descriptions and the user ratings of the garments,
+  our framework is capable of personalized recommendation according to various metrics
+  such as style and diversity.
+The novelty of our approach also comes from the fact that
+  we try to not only employ a reasonable method to utilize 
+  image information but also combine the image and text information together.
+To the best of our knowledge, personalized apparel recommendation has not been 
+  studied before in the context of E-commerce systems and the combination of 
+  image feature extraction and machine learning.
+
+% P5 
+Next some related work will be discussed. 
+The remainder of this paper is structured as follows. 
+In Section \ref{sec:challenge}, several technical challenges in personalized apparel recommendation are discussed.
+Section \ref{sec:approach} presents our approach, the novel framework for personalized apparel recommendation.
+Section \ref{sec:eval} shows some preliminary experiment results under our framework.
+Section \ref{sec:conclusion} concludes this paper and discusses some future work.
+
+\subsection{Related Work}
+
+Collaborative Filtering (CF) \cite{Goldberg92} has become a very common technique 
+  for providing personalized recommendations, suggesting items based on the similarity 
+  between users' preferences.
+Sarwar \etal\cite{Sarwar01} analyzed different item-based recommendation generation algorithms 
+  and stated that item-based algorithms provide dramatically better performance than 
+  user-based algorithms.
+
+Zhang \etal\cite{Zhang10} proposed an integrated diffusion-based algorithm, which is very much 
+  different from collaborative filtering, with the help of collaborative tagging 
+  information, and experimental results demonstrated significant improvement in accuracy, 
+  diversification and novelty of recommendations. 
+However, it is not an online algorithm and cannot give real-time response to the user activities.
+
+WebCF-DT \cite{Kim02} is a personalized recommendation procedure based on Web usage mining, 
+  product taxonomy, association rule mining, and decision tree induction. 
+It relies heavily on behavior patterns and lacks understanding of recommended materials. 
+Also they don't have a comparison with collaborative filtering and rule-based approaches, 
+  therefore the effectiveness is not convincing.
+
+INTRIGUE \cite{Ardissono03} is a prototype tourist-information server that recommends 
+  sightseeing destinations and itineraries by taking into account the preferences of 
+  heterogeneous tourist groups instead of individuals.
+INTRIGUE uses a na\"ive polynomial formula for generating scores of items and thus has less 
+  intelligence than approaches supported by machine learning techniques.
