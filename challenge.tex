@@ -1,0 +1,46 @@
+\section{Technical Challenges}\label{sec:challenge}
+
+In this section, several technical challenges in personalized apparel recommendation 
+  are listed and discussed with respect to our framework. 
+
+\subsection{How to Model an Item}
+An \emph{item} means a garment along with several images and text labels.
+For personalized apparel recommendation, one common way is to extract 
+  the text labels (sizes, styles, colors, materials, etc.) and do recommendation 
+  based on the statistics of and the relationships among these labels.
+However, it ignores lots of information provided by the images of the garments.
+As stated in Section \ref{sec:intro}, personalized apparel recommendation is 
+  very much sensitive in that the choices of people with similar interests 
+  may differ in case of only tiny differences. 
+One of the novelties in our work is to model items by using the image features.
+For image features, we strive to capture the most distinguishing or significant ones 
+  in order to improve the sensitivity of our recommendation.
+
+\subsection{How to Model User Preference}
+In E-commerce systems, various actions can be captured and classified as user preferences,
+  for example, viewing item page, checking details (mouse clicking), adding to cart, adding to favorites.
+However, these kinds of actions are relatively easy to trigger and have less side effects.
+So there tends to be many of these actions which may include noises and cause misleading recommendations.
+In our framework, the users are required to judge a garment with scores based on personal preference,
+  i.e. to give ratings manually.
+Along with the scores, the users can also specify the confidence values of the rating. 
+For those easy-to-trigger actions (or events), it is trivial to generate scores with appropriate 
+  confidence values on behalf of the users.
+
+\subsection{How to Recommend}
+Given the item models and user preference models, the next problem to solve is how to recommend.
+One possible way is to use a na\"ive Bayes classifier or similar probabilistic classifiers.
+However, these kinds of classifiers require some extent of distribution independence which may not, 
+  or relatively hard to, be satisfied under the setting of the item models and preference models. 
+In our framework, the item models are required to be in the form of vectors, and an SVM classifier 
+  is trained from user ratings of everybody and used as the preference model for each user.
+Eventually there will be one SVM classifier for each user and the framework recommends according to
+  the scores given by the classifier. 
+
+\subsection{How to Recommend in an Online Context}
+For any of the item modeling, the user preference modeling and the recommendation, 
+  it should be done in an \emph{online} context because of the nature of E-commerce systems.
+This means most of the batch-mode offline algorithms can not be applied in the framework.
+Since this involves more fundamental aspects of image processing and machine learning, 
+  instead of devising new techniques or reinventing the wheels, we examine and adopt several 
+  suitable algorithms in our framework for further selection. 

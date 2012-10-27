@@ -55,37 +55,13 @@ To the best of our knowledge, personalized apparel recommendation has not been
   studied before in the context of E-commerce systems and the combination of 
   image feature extraction and machine learning.
 
-% P5 
-Next some related work will be discussed. 
+% P5  
 The remainder of this paper is structured as follows. 
-In Section \ref{sec:challenge}, several technical challenges in personalized apparel recommendation are discussed.
+Section \ref{sec:overview} presents an overview of our framework.
+Section \ref{sec:challenge} discusses several technical challenges in personalized apparel recommendation are discussed.
 Section \ref{sec:approach} presents our approach, the novel framework for personalized apparel recommendation.
 Section \ref{sec:eval} shows some preliminary experiment results under our framework.
 Section \ref{sec:conclusion} concludes this paper and discusses some future work.
+Section \ref{sec:related} discusses some of the related work.
 
-\subsection{Related Work}
 
-Collaborative Filtering (CF) \cite{Goldberg92} has become a very common technique 
-  for providing personalized recommendations, suggesting items based on the similarity 
-  between users' preferences.
-Sarwar \etal\cite{Sarwar01} analyzed different item-based recommendation generation algorithms 
-  and stated that item-based algorithms provide dramatically better performance than 
-  user-based algorithms.
-
-Zhang \etal\cite{Zhang10} proposed an integrated diffusion-based algorithm, which is very much 
-  different from collaborative filtering, with the help of collaborative tagging 
-  information, and experimental results demonstrated significant improvement in accuracy, 
-  diversification and novelty of recommendations. 
-However, it is not an online algorithm and cannot give real-time response to the user activities.
-
-WebCF-DT \cite{Kim02} is a personalized recommendation procedure based on Web usage mining, 
-  product taxonomy, association rule mining, and decision tree induction. 
-It relies heavily on behavior patterns and lacks understanding of recommended materials. 
-Also they don't have a comparison with collaborative filtering and rule-based approaches, 
-  therefore the effectiveness is not convincing.
-
-INTRIGUE \cite{Ardissono03} is a prototype tourist-information server that recommends 
-  sightseeing destinations and itineraries by taking into account the preferences of 
-  heterogeneous tourist groups instead of individuals.
-INTRIGUE uses a na\"ive polynomial formula for generating scores of items and thus has less 
-  intelligence than approaches supported by machine learning techniques.

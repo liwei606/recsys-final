@@ -1,0 +1,44 @@
+\section{Our Approach}\label{sec:approach}
+
+For images, at first they are preprocessed to gray-scale 
+  pictures with minimum disturbance from the background 
+  and the photo model, which is approached by morphological 
+  manipulation using OpenCV. 
+Then sparse coding is applied with respect to a learnt dictionary  
+  to delineate pictures by feature vectors. 
+Thus each image can be successfully represented and be ready for machine learning. 
+It is also noted that if a garment contains several pictures, 
+  it would be treated as several garments of the same text labels and scores.
+
+As for text label processing, a certain number of keywords 
+  could be picked to describe clothing characteristics like 
+  \emph{long sleeve} in sleeve length, 
+  \emph{leisure} in styles and 
+  \emph{cotton} in fabrics. 
+A vector in binary is used to record such features. 
+Ultimately, they will be concatenated to another vector to represent clothing features. 
+In addition, clustering is applied to detect the different text labels with the same meaning.
+
+For every user, he or she will judge a garment based on personal 
+  preference with scores from 1 to 5. 
+All the choices for clothing are recorded for future recommendation. 
+Then based on the certain user's previous choices, the potential 
+  high-score garments can be predicted and thus being recommended.
+
+Once we get the user's preferences (scores) on some garments, 
+  the relationships between these garments and their scores on this
+  particular user have been established, which are serving as a training set. 
+Then we use SVM to estimate the scores of other garments, based on which, 
+  we pick the highest ones to recommend. 
+Note that this whole process is based on this particular user's preference.
+There's also another optional way to recommend. 
+The garments we recommend will have a high possibility of user's preference, 
+  which is derived from the relationship between the preference models of different users.
+
+Formally, suppose there are $K$ keywords in total, then every item $I$ has an associated 
+  $K$-dimensional vector $T(I)$ where each dimension is either 0 or 1 which indicates the 
+  existence of the corresponding keyword in the text labels of item $I$.
+For an item $I$ and a user $U$, let $s(U,I)$ denote the score of $I$ given by $U$. 
+Let $M(I)$ be the collection of all the images of $I$, $D$ be the learnt dictionary, and
+  $C(M,D)$ be the sparse coding of $M$ using $D$.
+Then the training set can be represented as $$ \{ [C(M^*,D), T(I), s(U,I)] : M^* \in M(I) \} .$$
