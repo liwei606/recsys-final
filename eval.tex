@@ -17,6 +17,8 @@ Temporarily we only focused on text label part, and ignore the pictures. And as 
   \label{fig:freq}
 \end{figure}
 
+\input{website}
+
 \subsection{Results and Interpretation}
 After acquiring the necessary data as input of the SVM, we began our training and assessing. Since we focused on every volunteer's individuality and personal preferences, we performed  the learning process to every one. 
 Table 1 shows the results of LIBSVM learning after parameter modification, with the accuracy of 5-fold cross-validation.It implies that even with text features alone the accuracies could be high enough to make recommendations. However it is worth noticing that over-fitting is prone to occur since the learning set we use are extremely small. It is expected that after combining graphical features this potential problem could be alleviated. 

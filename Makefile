@@ -1,9 +1,8 @@
 all:
-	latex paper.tex
+	pdflatex paper.tex
 	bibtex paper
-	latex paper.tex
-	latex paper.tex
-	dvipdf paper.dvi
+	pdflatex paper.tex
+	pdflatex paper.tex
 
 clean:
 	rm -f *.blg *.bbl *.synctex *.aux *.dvi *.log *.ent *.pdf *.gz *.fdb_latexmk
