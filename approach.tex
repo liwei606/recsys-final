@@ -1,5 +1,16 @@
 \section{Our Approach}\label{sec:approach}
 
+The first step is to process text labels. A certain number of keywords 
+  could be picked to describe clothing characteristics like 
+  \emph{long sleeve} in sleeve length, 
+  \emph{leisure} in styles and 
+  \emph{cotton} in fabrics. 
+Then a vector in binary is used to record such features for both clustering and feature selection.
+
+In the next step, HAC (Hierarchical Agglomerative Clustering) was 
+employed to reveal similarities among the text labels of different 
+garments, then we manually set a threshold as the number of clusters to divide all the garments to several groups, which serve as the basis for future classification.
+
 For images, at first they are preprocessed to gray-scale 
   pictures with minimum disturbance from the background 
   and the photo model, which is approached by morphological 
@@ -10,14 +21,7 @@ Thus each image can be successfully represented and be ready for machine learnin
 It is also noted that if a garment contains several pictures, 
   it would be treated as several garments of the same text labels and scores.
 
-As for text label processing, a certain number of keywords 
-  could be picked to describe clothing characteristics like 
-  \emph{long sleeve} in sleeve length, 
-  \emph{leisure} in styles and 
-  \emph{cotton} in fabrics. 
-A vector in binary is used to record such features. 
-Ultimately, they will be concatenated to another vector to represent clothing features. 
-In addition, clustering is applied to detect the different text labels with the same meaning.
+And finally the binary vector constructed from text labels would be concatenated to another vector which describes image features to represent the whole features.
 
 For every user, he or she will judge a garment based on personal 
   preference with scores from 1 to 5. 
