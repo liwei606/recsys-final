@@ -1,4 +1,5 @@
 \documentclass[a4paper]{article}
+\usepackage[titletoc]{appendix}
 % http://faculty.uoit.ca/bohun/latex/margins.html
 \usepackage[a4paper,left=2.5cm,top=3.2cm,right=2.5cm,bottom=2.54cm,nohead,nofoot]{geometry}
 \usepackage{fancyhdr}
@@ -33,6 +34,10 @@ Wei Li\\
 In E-commerce systems, picking an item is time-consuming for individuals, which demands recommender systems with higher efficiency and accuracy, as well as support for more personalized recommendation. We propose a novel idea and framework for personalized apparel recommendation which combines both item images and textual labels by using sparse coding and support vector machine (SVM). Extensive discussions and preliminary experiment results show the practicality and validity of our framework.
 \end{abstract}
 
+\tableofcontents
+
+\newpage
+
 \input{intro}
 
 \input{overview}
@@ -49,5 +54,10 @@ In E-commerce systems, picking an item is time-consuming for individuals, which 
 
 \bibliographystyle{abbrv}
 \bibliography{recsys}
+
+\begin{appendices}
+  \section*{Appendix}
+  \input{appendix-crawl}
+\end{appendices}
 
 \end{document}

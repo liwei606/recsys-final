@@ -1,0 +1,125 @@
+\section{Crawl}
+
+\subsection{Selected shops}
+\begin{enumerate}
+\item http://store.taobao.com/shop/view\_shop-b22399989259942b7b66c99c175a5100.htm
+\item http://store.taobao.com/?shop\_id=56634
+\item http://store.taobao.com/?shop\_id=59495864
+\item http://store.taobao.com/?shop\_id=33483998
+\item http://store.taobao.com/?shop\_id=62997280
+\item http://store.taobao.com/?shop\_id=62800620
+\item http://liuzstyle-1.taobao.com/?spm=11020*pv.2-3JyCq.2-3rU2Br
+\item http://fsnz.tmall.com/shop/viewShop.htm
+\item http://justylenz.tmall.com/shop/viewShop.htm
+\item http://cfa.tmall.com/shop/viewShop.htm
+\item http://ousibo.tmall.com/shop/viewShop.htm
+\item http://bitnicha.tmall.com/shop/viewShop.htm
+\item http://huijiao.tmall.com/shop/viewShop.htm
+\item http://eptisonfs.tmall.com/shop/viewShop.htm?prt=1326439183738\&prc=1
+\item http://yingxiang.tmall.com/shop/viewShop.htm
+\item http://zhennuo.tmall.com/shop/viewShop.htm
+\item http://lanjue.tmall.com/shop/viewShop.htm
+\item http://store.taobao.com/view\_shop.htm?user\_number\_id=734349353
+\item http://dianliyou.tmall.com/shop/viewShop.htm
+\item http://yixuanmeier.tmall.com/shop/viewShop.htm
+\item http://oqueenz.tmall.com/shop/viewShop.htm
+\item http://goefir.tmall.com/shop/viewShop.htm
+\end{enumerate}
+
+\subsection{URL matchers}
+\begin{verbatim}
+http://item\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
+http://item\.taobao\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
+http://detail\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
+\end{verbatim}
+
+\subsection{\tt url.fetcher.sh}
+\begin{verbatim}
+#!/bin/bash
+
+UA='Some User Agent'
+item_counter=0
+
+touch url.list
+unlink url.list
+
+for store in `cat stores.txt`; do
+  echo "Fetch store information: $store"
+  wget -q -U "$UA" -O - "$store" | cat > store.html.tmp
+  for regex in `cat url.matchers`; do
+    for url in `cat store.html.tmp | grep -o -P "$regex"`; do
+      let item_counter=item_counter+1
+      echo "    $item_counter: $url"
+      echo $url >> url.list
+    done
+  done
+  unlink store.html.tmp
+done
+cat url.list | wc -l
+
+cat url.list | sort | uniq | cat > url.list.tmp
+mv url.list.tmp url.list
+cat url.list | wc -l
+\end{verbatim}
+
+\subsection{\tt item.fetcher.sh}
+\begin{verbatim}
+#!/bin/bash
+
+UA='Some User Agent'
+item_counter=0
+
+touch id.list
+unlink id.list
+
+for url in `cat url.list`; do
+  let item_counter=item_counter+1
+
+  id=`echo $url | grep -o -P '(?<=id=)\d+'`
+  echo $id >> id.list
+  echo "Fetching item ($item_counter, id: $id): $url"
+
+  item_dir="items/$id"
+  rm -rf $item_dir
+  mkdir $item_dir
+
+  item_page="$item_dir/$id.html"
+  wget -q -U "$UA" -O - "$url" > $item_page
+  cat $item_page | wc -l
+done
+\end{verbatim}
+
+\subsection{\tt image.fetcher.sh}
+\begin{verbatim}
+#!/bin/bash
+
+UA='Some User Agent'
+item_counter=0
+
+for id in `cat id.list`; do
+  item_page=`printf "items/%d/%d.html" $id $id`
+  item_desc=`printf "items/%d/%d.txt" $id $id`
+  top_jpg_dir=`printf "items/%d/top" $id`
+  top_jpg_list=`printf "items/%d/top.txt" $id`
+
+  let item_counter=item_counter+1
+  echo "$item_counter: Fetching item $id..."
+
+  cat $item_page
+    | grep -P -A 1 '<ul class="attributes-list">'
+    | grep -o -P '(?<=">).+?(?=</li>)'
+    | sed 's/\&nbsp;//g' > $item_desc
+  cat $item_page
+    | grep -P -A 1 '<div class="tb-pic tb-s40">'
+    | grep -o -P 'http://.+?\.jpg'
+    | sort
+    | uniq > $top_jpg_list
+
+  rm -rf $top_jpg_dir
+  mkdir $top_jpg_dir
+
+  for jpg in `cat $top_jpg_list`; do
+    wget -q -U "$UA" -P "$top_jpg_dir" "$jpg"
+  done
+done
+\end{verbatim}
