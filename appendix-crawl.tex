@@ -1,6 +1,6 @@
 \section{Crawl}
 
-\subsection{Selected shops}
+\subsection{Selected shops}\label{appsec:selected-shops}
 \begin{enumerate}
 \item http://store.taobao.com/shop/view\_shop-b22399989259942b7b66c99c175a5100.htm
 \item http://store.taobao.com/?shop\_id=56634
@@ -26,14 +26,14 @@
 \item http://goefir.tmall.com/shop/viewShop.htm
 \end{enumerate}
 
-\subsection{URL matchers}
+\subsection{URL matchers}\label{appsec:url-matchers}
 \begin{verbatim}
 http://item\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
 http://item\.taobao\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
 http://detail\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
 \end{verbatim}
 
-\subsection{\tt url.fetcher.sh}
+\subsection{\tt url.fetcher.sh}\label{appsec:url-fetcher}
 \begin{verbatim}
 #!/bin/bash
 
@@ -62,7 +62,7 @@ mv url.list.tmp url.list
 cat url.list | wc -l
 \end{verbatim}
 
-\subsection{\tt item.fetcher.sh}
+\subsection{\tt item.fetcher.sh}\label{appsec:item-fetcher}
 \begin{verbatim}
 #!/bin/bash
 
@@ -89,7 +89,7 @@ for url in `cat url.list`; do
 done
 \end{verbatim}
 
-\subsection{\tt image.fetcher.sh}
+\subsection{\tt image.fetcher.sh}\label{appsec:image-fetcher}
 \begin{verbatim}
 #!/bin/bash
 

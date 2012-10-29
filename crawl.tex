@@ -1,1 +1,11 @@
 \subsection{Crawl}
+At first we acquired the garment information from Taobao where one set of garment consists several pictures and a text label describing the garment. 
+This section describes the details of fetching data from Taobao.
+
+The whole fetching process consists of three steps in general.
+\begin{enumerate}
+\item Get a list of all products from manually specified online shops.
+\item Fetch the HTML pages of all the products.
+\item Fetch product images by analyzing the HTML pages.
+\end{enumerate}
+We have manually picked 22 online shops on Taobao with relatively high quality of information provided (see \ref{appsec:selected-shops}). From this list of shops, we get the list of all products by using patterns specified in \ref{appsec:url-matchers}, which is used in the Bash script described in \ref{appsec:url-fetcher}. \texttt{url.fetcher.sh} will generate a file \texttt{url.list} with the URLs of all the products from these shops. Then \texttt{item.fetcher.sh} (see \ref{appsec:item-fetcher}) will read from \texttt{url.list} and fetch corresponding HTML pages. After that, \texttt{image.fetcher.sh} (see \ref{appsec:image-fetcher}) scans all the fetched HTML pages and filter out a list of images to fetch. 
