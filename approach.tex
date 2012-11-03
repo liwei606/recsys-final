@@ -23,6 +23,7 @@ The first step is to process text labels. A certain number of keywords could be 
 \subsubsection{HAC textual labels}
 In the next step, HAC (Hierarchical Agglomerative Clustering) was employed to reveal similarities among the text labels of different 
 garments, then we manually set a threshold as the number of clusters to divide all the garments to several groups, which serve as the basis for future classification.
+In our approach HAC is preferred because it could produce an ordering of the objects, which may be informative for future classification.  In addition, multiple measures of distance can be used, however for simplicity we only focus on Euclidean distance and regard the mean distance between elements of each cluster as the distance between clusters.
 
 \subsubsection{Preprocessing images}
 For images, at first they are preprocessed to gray-scale pictures with minimum disturbance from the background and the photo model, which is approached by morphological manipulation using OpenCV. Figure \ref{fig:image1} and Figure \ref{fig:image2} shows two examples of the images after preprocessing by OpenCV. We can see from the images that the disturbance of the background is mostly eliminated. Thus the features we used to further represent the images are mainly the apparel information itself.
@@ -83,6 +84,7 @@ In addition to performing linear classification, SVMs can efficiently perform no
 \subsubsection{Leverage SVM in our framework}
 In our framwork, the inputs is the apprel set, the vectors combined by textual labels and image features, and the classes the apprel item is mapped is the corresponding preference ratings for an specific user.Then we use SVM to estimate the rating of other garments, based on which, we pick the highest ones to recommend. 
 Note that this whole process is based on this particular user's preference. As is mentioned above, different users have different map according to their own model of user preference. 
+As for the parameter selection for SVM, we applied grid search technique to find the optimal parameter set, i.e. we enumerate all the possible choices of parameters within a reasonable range and choose the one with the best cross-validation result and apply this parameter set for the future recommendation.
 
 \subsubsection{Other options}
 There's also another optional way to recommend. 
