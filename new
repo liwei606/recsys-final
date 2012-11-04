@@ -1,0 +1,887 @@
+A Framework for Personalized Apparel Recommendation
+Xiao Jia Junjia He Wei Li
+Shanghai Jiao Tong University Shanghai Jiao Tong University Shanghai Jiao Tong University
+xjia@cs.sjtu.edu.cn hejunjia1911@gmail.com liwei606@gmail.com
+Abstract
+In E-commerce systems, picking an item is time-consuming for individuals, which demands rec-
+ommender systems with higher efficiency and accuracy, as well as support for more personalized
+recommendation. We propose a novel idea and framework for personalized apparel recommenda-
+tion which combines both item images and textual labels by using sparse coding and support vector
+machine (SVM). Extensive discussions and preliminary experiment results show the practicality and
+validity of our framework.
+Contents
+1 Introduction 3
+2 Overview 3
+2.1 Learn clothing features . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+2.2 Model user preference . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2.3 Recommend by rating . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+3 Technical Challenges . . . . . . . . . . . . . . . . . . . 5
+3.1 How to Model an Item . . . . . . . . . . . . . . . . . . . . . . . . . 5
+3.2 How to Model User Preference . . . . . . . . . . . . . . . . . . . . 5
+3.3 How to Recommend . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+3.4 How to Recommend in an Online 5
+4 Our Approach . . . . . . . . . . . . . . . . . . 6
+4.1 Model apparel item . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.1.1 HAC textual labels . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.1.2 Vectors of textual labels . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.1.3 Preprocessing images . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.1.4 Learn dictionary of images with K-SVD algorithm . . . . . . . . . . . . . . . . . . 6
+4.1.5 Learn vectors of images . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.1.6 Comine vectors by weight . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.2 Model user preference . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.2.1 Get user preference and model it . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.2.2 Map apparel item to user preference . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.3 Recommend by rating . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.3.1 Support Vector Machine . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.3.2 Leverage SVM in our framework . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+4.3.3 Other options . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+4.4 Theoretical model . . . . . . . . . . . . . . . . . . . . . . 7
+5 Evaluation . . . . . . . . . . . . . . . . . . 7
+5.1 Experiment Settings . . . . . . . . . . . . . . . . . . 7
+5.2 Crawl . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+5.3 Website . . . . . . . . . . . . . . . . . . . . . . . . . 8
+5.4 Results and Analysis 8
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+. . . . .
+. . . . .
+. . . . .
+Context
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+1
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+6 Conclusion and Future Work 8
+6.1 Learn combination weight of the vector . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+6.2 Quantify the user actions to ratings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7 Related Work 10
+Appendix A Crawl
+A.1 Selected shops . . .
+A.2 URL matchers . .
+A.3 url.fetcher.sh .
+A.4 item.fetcher.sh
+A.5 image.fetcher.sh
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+2
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+11
+11
+12
+12
+12
+13
+1
+Introduction
+Recommender systems have become a hot research area in recent years and many innovative approaches
+have been proposed both scientifically and commercially. Many recommender systems deal with books
+and daily commodities; they need to be more efficient and accurate, and cover more fields. Online trading
+is an overwhelming trend and E-commerce is a promising field. For many businesses, online opinion has
+turned into a kind of virtual currency that can make or break a product in the marketplace [8]. There are
+so many items (products) in E-commerce systems that picking an item is time-consuming for individuals.
+Therefore recommender systems are key to the success of such E-commerce systems, and shortening the
+time for an individual means improving the throughput of the E-commerce system, thus contributing
+more transactions.
+The soaring E-commerce industry demands recommender systems with higher efficiency and accuracy,
+as well as support for more personalized recommendation. Personalized recommendation can be achieved
+by using data mining techniques on massive amount of user profiles and behaviors (so-called collabora-
+tion) regardless of the features of recommended items themselves. However, this kind of personalized
+recommendation is not applicable to personalized apparel recommendation where the choices of people
+with similar interests are sensitive to apparel particulars and may differ in case of only tiny differences.
+In this case, it is essential to capture as many features as possible which are associated with both the
+clothes themselves and the user’s preference so that the personalized recommendation can be achieved in
+better performance.
+In this paper, we propose a novel idea and framework for personalized apparel recommendation which
+combines both item images and textual labels by using sparse coding and support vector machine (SVM).
+Sparse coding provides a class of algorithms for finding succinct representations of stimuli; given only
+unlabeled input data, it learns basis functions that capture higher-level features in the data [6]. SVM is
+a widely used machine learning method for classification and regression analysis, based on the principle
+of structural risk minimization, which performs well when applied to data outside the training set [3].
+Given the images, the textual descriptions and the user ratings of the garments, our framework is
+capable of personalized recommendation according to various metrics such as style and diversity. The
+novelty of our approach also comes from the fact that we try to not only employ a reasonable method
+to utilize image information but also combine the image and text information together. To the best
+of our knowledge, personalized apparel recommendation has not been studied before in the context of
+E-commerce systems and the combination of image feature extraction and machine learning.
+The remainder of this paper is structured as follows. Section 2 presents an overview of our framework.
+Section 3 discusses several technical challenges in personalized apparel recommendation are discussed.
+Section 4 presents our approach, the novel framework for personalized apparel recommendation. Section
+5 shows some preliminary experiment results under our framework. Section 6 concludes this paper and
+discusses some future work. Section 7 discusses some of the related work.
+2
+Overview
+Our framework learned the features of clothing from both the textual labels and the images of clothes
+on the E-commerce websites. The input of our framework is the user preference which can be modeled
+from some of the user action records, including browsing time, favorite items, clicking history and ratings,
+etc. The output is the recommended clothes ranked by the possibility that the user would be interested
+in it. This framework has three major steps: learning clothing features, modeling user preferences, and
+recommending by rating. Figure 1 depicts the overall process of personalized recommendation in our
+framework.
+2.1
+Learn clothing features
+There are two features we can leverage to model a garment item. One is textual labels such as cotton
+for material, sports for style and XL for size, etc. The other is several affiliated images depicting each
+garment. The information of textual labels and images would be represented as textual vectors and image
+vectors respectively. The representation of textual labels is quite straightforward as we can extract all
+the possible adjectives like slim, loose, lady and cute in the textual labels. Each adjective represent a
+feature of the apparel in textual level. If the apparel item contains that feature in its textual label, we
+3
+Dictionary
+Item
+Item
+Image
+Item
+Image
+Item
+Image
+Image
+sparse coding
+business
+home
+sports
+entertainment
+tags
+ratings
+!!
+0.1, 0.2, 0.7, 0.3, ...
+1, 0, 1, 0, 1, 1, 0, ...
+4
+0.1, 0.2, 0.7, 0.3, ... 1, 1, 1, 0, 1, 1, 0, ... 3
+0.8, 0.2, 0.7, 0.3, ... 0, 1, 0, 0, 1, 1, 0, ... 
+0.6, 0.7, 0.2, 0.9, ... 0, 1, 1, 0, 1, 1, 0, ... ?
+5
+SVM
+Figure 1: Framework Overview
+can mark 1 in the corresponding place in the textual vector. If not, mark 0. The image processing is
+more complicated than textual processing to learn the representations. We get the image vector from a
+base matrix which also serves as a dictionary. The technique details will be discussed in Section 4. After
+both the textual labels and the images being represented as vectors, the two vectors will be combined
+together by weight as the final representation for each apparel item.
+2.2
+Model user preference
+In our framework, each apparel item is linked with a preference model for a specific user, and the model
+would be applied to map the clothing set to the preference set of that user. For different users, the mapping
+from the clothing set to the corresponding preference set may vary significantly. Many actions can be
+tracked in the E-commerce systems to model the user preference such as scanning time, favorite collection,
+purchase records and even clicks, etc. These features can be modeled as a rating with an approriate range,
+1 to 5 for instance. Here we choose the rating to represent the user preference is reasonable since the
+model of user preference has a direct connection with the way we do recommendation. If we model the
+user preference with ratings then we can recommend by the predicted ratings of each garment evaluated
+by machine learning technology. Quantify the user preference is an accurate and easy way to do the
+recommendation.
+2.3
+Recommend by rating
+The last step of our framework is to recommend clothes in which the user has high possibility to invest.
+The ranking strategy of the recommendation is based on the value of possibility provided by the machine
+learning technology which takes both the vectors of apparel item and the corresponding ratings of user
+preference as the input set. In this step, the major technique we’ve leveraged is support vector machine
+(SVM) which can solve this kind of problem correctly and efficiently. More details can been seen in
+Section 4.
+In summary, there are three major contributions in this paper and our framework:
+• We propose a novel and more effective approach to build a framework for personalized apparel
+recommender systems which focus on the personality of different users and recommend with higher
+accuracy. We leverage all the possible information of each apparel item from both the textual labels
+4
+and garment images. We combine the vectors of the two sources together by weight to represent
+the apparel item. The weight can be adaptive to different users as the emphasis on textual labels
+and images varied from person to person.
+• We propose a novel way to leverage the different images affiliated to one apparel item. We treat
+these images as distinctive garment images with the same textual labels and ratings. For example,
+if an apparel item has ID 4 and contains 3 images I1 I2 I3 to dipict this garment along with a
+textual label T. If the corresponding preference of this garment has been known from a specific
+user and the rating is R. Then in our framework we treat these three images affiliated to the same
+apparel item as three distinctive items but with the same textual label T and the rating R. This
+process can enhance the efficiency of the item modeling and learning process.
+• We have tried several algorithm that can be applied in our framework. As a consequence we
+managed to exclude the unsuitalbe ones and leverage the most efficient and suitable algorithms like
+HAC, K-SVD, SVM, etc.
+3
+Technical Challenges
+In this section, several technical challenges in personalized apparel recommendation are listed and dis-
+cussed with respect to our framework.
+3.1
+How to Model an Item
+An item means a garment along with several images and text labels. For personalized apparel recom-
+mendation, one common way is to extract the text labels (sizes, styles, colors, materials, etc.) and do
+recommendation based on the statistics of and the relationships among these labels. However, it ignores
+lots of information provided by the images of the garments. As stated in Section 1, personalized apparel
+recommendation is very much sensitive in that the choices of people with similar interests may differ
+in case of only tiny differences. One of the novelties in our work is to model items by using the image
+features. For image features, we strive to capture the most distinguishing or significant ones in order to
+improve the sensitivity of our recommendation.
+3.2
+How to Model User Preference
+In E-commerce systems, various actions can be captured and classified as user preferences, for example,
+viewing item page, checking details (mouse clicking), adding to cart, adding to favorites. However, these
+kinds of actions are relatively easy to trigger and have less side effects. So there tends to be many of these
+actions which may include noises and cause misleading recommendations. In our framework, the users
+are required to judge a garment with scores based on personal preference, i.e. to give ratings manually.
+Along with the scores, the users can also specify the confidence values of the rating. For those easy-to-
+trigger actions (or events), it is trivial to generate scores with appropriate confidence values on behalf of
+the users.
+3.3
+How to Recommend
+Given the item models and user preference models, the next problem to solve is how to recommend. One
+possible way is to use a na ̈ Bayes classifier or similar probabilistic classifiers. However, these kinds
+ıve
+of classifiers require some extent of distribution independence which may not, or relatively hard to, be
+satisfied under the setting of the item models and preference models. In our framework, the item models
+are required to be in the form of vectors, and an SVM classifier is trained from user ratings of everybody
+and used as the preference model for each user. Eventually there will be one SVM classifier for each user
+and the framework recommends according to the scores given by the classifier.
+3.4
+How to Recommend in an Online Context
+For any of the item modeling, the user preference modeling and the recommendation, it should be done
+in an online context because of the nature of E-commerce systems. This means most of the batch-mode
+5
+offline algorithms can not be applied in the framework. Since this involves more fundamental aspects of
+image processing and machine learning, instead of devising new techniques or reinventing the wheels, we
+examine and adopt several suitable algorithms in our framework for further selection.
+4
+Our Approach
+The first step is to process text labels. A certain number of keywords could be picked to describe clothing
+characteristics like long sleeve in sleeve length, leisure in styles and cotton in fabrics. Then a vector in
+binary is used to record such features for both clustering and feature selection.
+4.1
+4.1.1
+Model apparel item
+HAC textual labels
+In the next step, HAC (Hierarchical Agglomerative Clustering) was employed to reveal similarities among
+the text labels of different garments, then we manually set a threshold as the number of clusters to divide
+all the garments to several groups, which serve as the basis for future classification.
+4.1.2 Vectors of textual labels
+4.1.3 Preprocessing images
+For images, at first they are preprocessed to gray-scale pictures with minimum disturbance from the
+background and the photo model, which is approached by morphological manipulation using OpenCV.
+4.1.4 Learn dictionary of images with K-SVD algorithm
+4.1.5 Learn vectors of images
+Then sparse coding is applied with respect to a learnt dictionary to delineate pictures by feature vectors.
+Thus each image can be successfully represented and be ready for machine learning. It is also noted that
+if a garment contains several pictures, it would be treated as several garments of the same text labels
+and scores.
+4.1.6
+Comine vectors by weight
+And finally the binary vector constructed from text labels would be concatenated to another vector which
+describes image features to represent the whole features.
+4.2
+4.2.1
+Model user preference
+Get user preference and model it
+For every user, he or she will judge a garment based on personal preference with scores from 1 to 5.
+All the choices for clothing are recorded for future recommendation. Then based on the certain user’s
+previous choices, the potential high-score garments can be predicted and thus being recommended.
+4.2.2
+Map apparel item to user preference
+Once we get the user’s preferences (scores) on some garments, the relationships between these garments
+and their scores on this particular user have been established, which are serving as a training set.
+4.3
+Recommend by rating
+4.3.1 Support Vector Machine
+4.3.2 Leverage SVM in our framework
+Then we use SVM to estimate the scores of other garments, based on which, we pick the highest ones to
+recommend. Note that this whole process is based on this particular user’s preference.
+6
+4.3.3
+Other options
+There’s also another optional way to recommend. The garments we recommend will have a high possibility
+of user’s preference, which is derived from the relationship between the preference models of different users.
+4.4
+Theoretical model
+Formally, suppose there are K keywords in total, then every item I has an associated K-dimensional
+vector T (I) where each dimension is either 0 or 1 which indicates the existence of the corresponding
+keyword in the text labels of item I. For an item I and a user U , let s(U, I) denote the score of I given
+by U . Let M (I) be the collection of all the images of I, D be the learnt dictionary, and C(M, D) be the
+sparse coding of M using D. Then the training set can be represented as
+{[C(M ∗ , D), T (I), s(U, I)] : M ∗ ∈ M (I)}.
+5
+Evaluation
+The proposed framework is temporarily evaluated in terms of its ability to model users’ preferences solely
+based on text labels of garments regardless of the photos. The following subsections would separately
+describe our evaluation approaches and results.
+5.1
+Experiment Settings
+At first we acquired the garment information from Taobao where one set of garment consists several
+pictures and a text label describing the garment. By this way we have got 1772 garments in total as
+our raw data. The next step is to convert the chromatic pictures into scalable gray-scale pictures by
+OpenCV. After this step the preprocessing is done.
+The next thing we need is to acquire the users’ preferences, and fortunately we successfully invited
+24 volunteers to assess the garments and rate them. Meanwhile we set up a website and record every
+volunteer’s scoring, and as a consequent we got approximately 60 ratings per volunteer summing up to
+1553 ratings in total.
+When considering the text labels, we manually chose 322 keywords as text features and Figure 2 shows
+the frequency of each feature label. In the Y axis are the frequencies, i.e. how many times a feature label
+appears in the set of text descriptions of rated garments, while the X axis are the IDs of each feature
+label.
+Temporarily we only focused on text label part, and ignore the pictures. And as for the selection of
+learning machines, we finally chose LIBSVM [2] as the tool to perform SVM learning.
+5.2
+Crawl
+At first we acquired the garment information from Taobao where one set of garment consists several
+pictures and a text label describing the garment. This section describes the details of fetching data from
+Taobao.
+The whole fetching process consists of three steps in general.
+1. Get a list of all products from manually specified online shops.
+2. Fetch the HTML pages of all the products.
+3. Fetch product images by analyzing the HTML pages.
+We have manually picked 22 online shops on Taobao with relatively high quality of information provided
+(see A.1). From this list of shops, we get the list of all products by using patterns specified in A.2, which
+is used in the Bash script described in A.3. url.fetcher.sh will generate a file url.list with the URLs
+of all the products from these shops. Then item.fetcher.sh (see A.4) will read from url.list and
+fetch corresponding HTML pages. After that, image.fetcher.sh (see A.5) scans all the fetched HTML
+pages and filter out a list of images to fetch.
+7
+Frequency of text labels
+140
+120
+100
+80
+60
+40
+20
+0
+0
+50
+100
+150
+200
+250
+300
+350
+Label ID
+Figure 2: Text label frequency
+5.3
+Website
+The section describes the website we set up for collecting user preferences.
+Figure 3 shows the screenshots of the website. Figure 3(a) is a synthesized screenshot of both user
+rating (top right) and product recommending (middle right) user interface. The top left part shows the
+images of the product. When the user moves the mouse pointer over the image, a larger image will be
+shown in the top right part, as shown in 3(b). The bottom part of the page shows the textual descriptions
+of the product.
+The website is written in PHP and deployed on Linux with Apache HTTP server. It randomly
+displays unrated products to the current user, collects user ratings of the products, and stores the ratings
+to a relational database for further investigation. The source code is available at https://github.com/
+stfairy/recsys-website.
+5.4
+Results and Analysis
+After acquiring the necessary data as input of the SVM, we began our training and assessing. Since we
+focused on every volunteer’s individuality and personal preferences, we performed the learning process
+to every one. Table 1 shows the results of LIBSVM learning after parameter modification, with the
+accuracy of 5-fold cross-validation.It implies that even with text features alone the accuracies could be
+high enough to make recommendations. However it is worth noticing that over-fitting is prone to occur
+since the learning set we use are extremely small. It is expected that after combining graphical features
+this potential problem could be alleviated.
+6
+Conclusion and Future Work
+Personalized recommender system will take on more and more significant role in humanbeing’s life with
+the soaring choices as well as the people’s pursuit for high efficiency and fast speed of life. Undoubtedly,
+8
+(a) Synthesized screenshot of both user rating and product recommending user interface
+(b) Screenshot of viewing details of a product image
+Figure 3: Screenshots of our website for collecting user preferences
+the recommender system will be prefered if its focus is the specific target user rather than a group of
+people or the actions of similar persons. Whereas, current recommender system for clothing is mostly
+recommend by group identities, which neglects the personality of the users. In this paper, we propose a
+novel framework for personalized recommender system which can recommend by each user’s preference.
+In our framework, there are three major process: model apparel item, model user preference, recom-
+mend by prediction ratings. We first model the apparel item as the vector which combined the textual
+vector and image vector together by a certain weight. The bit in textual vector will be labeled 1 if the
+textual labels contains the corresponding attributes (such as sports, lovely, loose, cotton, etc). Otherwise,
+it will be labeled 0. The image vector is the coefficients based on a dictionary learned from all the images
+by K-SVD algorithm. Next, the user preference will be collected through some action records of the user
+such as scanning time, favorite items, purchase history of some clicking records. In our framework the
+preference will be represented by the ratings from 1 - 5 to show different degree. The rating will be linked
+with the apparel items thus a map from the apparel set to the preference set is established for a specific
+user. Later, we can leverage SVM(Support Vector Machine) based on the existing map as training data
+to predict the unknown preference of the remained clothes. Finally, the framework will recommed to the
+user a list of clothes ranked by the predicted ratings.
+9
+UserID Accuracy UserID Accuracy
+1 89.0511% 13 94.1176%
+2 92.5373% 14 89.3939%
+3 80.9122% 15 93.7500%
+4 88.4615% 16 96.6667%
+5 91.3462% 17 93.3333%
+6 90.0000% 18 94.5946%
+7 86.8852% 19 85.7143%
+8 89.4737% 20 89.4231%
+9 97.0588% 21 88.3721%
+10 78.3019% 22 89.7059%
+11 82.0755% 23 90.4762%
+12 85.0000% 24 95.1613%
+Table 1: LIBSVM 5-fold cross-validation accuracies
+There are still some future work for our framework.
+6.1
+Learn combination weight of the vector
+The combination weight of the textual label and the image is learned to best fit the different inclination
+of different users. Some users may inline to focus more on images while some may make more emphasis
+on textual labels. Therefore the combination weight is varied from person to person. We can learn this
+weight by test the accuracy of different weight for a specific user. Then choose the weight that can serve
+the best accuracy under the condition that other variables are kept constant.
+6.2
+Quantify the user actions to ratings
+In the Section 4 Model user preference part, we have talked about the ratings can be modeled from the
+user actions including scanning time, etc. Howerver, how to quantify these actions and weight these
+different action are still under experiment. Undoubtedly this work will realease the burden of the users
+to rate the clothing under consciousness. On top of that, some inconscious actions may be more accurate
+to relect the user’s preference.
+7
+Related Work
+Collaborative Filtering (CF) [4] has become a very common technique for providing personalized rec-
+ommendations, suggesting items based on the similarity between users’ preferences. Sarwar et al. [7]
+analyzed different item-based recommendation generation algorithms and stated that item-based algo-
+rithms provide dramatically better performance than user-based algorithms.
+Zhang et al. [9] proposed an integrated diffusion-based algorithm, which is very much different from
+collaborative filtering, with the help of collaborative tagging information, and experimental results demon-
+strated significant improvement in accuracy, diversification and novelty of recommendations. However,
+it is not an online algorithm and cannot give real-time response to the user activities.
+WebCF-DT [5] is a personalized recommendation procedure based on Web usage mining, product
+taxonomy, association rule mining, and decision tree induction. It relies heavily on behavior patterns and
+lacks understanding of recommended materials. Also they don’t have a comparison with collaborative
+filtering and rule-based approaches, therefore the effectiveness is not convincing.
+INTRIGUE [1] is a prototype tourist-information server that recommends sightseeing destinations and
+itineraries by taking into account the preferences of heterogeneous tourist groups instead of individuals.
+INTRIGUE uses a na ̈ polynomial formula for generating scores of items and thus has less intelligence
+ıve
+than approaches supported by machine learning techniques.
+10
+References
+[1] L. Ardissono, A. Goy, G. Petrone, M. Segnan, and P. Torasso. Intrigue: Personalized recommendation
+of tourist attractions for desktop and hand held devices. Applied Artificial Intelligence, 2003.
+[2] C.-C. Chang and C.-J. Lin. LIBSVM: A library for support vector machines. ACM Transactions
+on Intelligent Systems and Technology, 2011. Available at http://www.csie.ntu.edu.tw/~cjlin/
+libsvm.
+[3] I. El-Naqa, Y. Yang, M. Wernick, N. Galatsanos, and R. Nishikawa. A support vector machine
+approach for detection of microcalcifications. IEEE Transactions on Medical Imaging, 2002.
+[4] D. Goldberg, D. Nichols, B. M. Oki, and D. Terry. Using collaborative filtering to weave an information
+tapestry. Communications of the ACM, 1992.
+[5] J. K. Kim, Y. H. Cho, W. J. Kim, J. R. Kim, and J. H. Suh. A personalized recommendation
+procedure for internet shopping support. Electronic Commerce Research and Applications, 2002.
+[6] H. Lee, A. Battle, R. Raina, and A. Y. Ng. Efficient sparse coding algorithms. In NIPS, 2007.
+[7] B. Sarwar, G. Karypis, J. Konstan, and J. Riedl. Item-based collaborative filtering recommendation
+algorithms. In Proceedings of the 10th international conference on World Wide Web, 2001.
+[8] A. Wright. Mining the web for feelings, not facts. In The New York Times, 2009.
+[9] Z.-K. Zhang, T. Zhou, and Y.-C. Zhang. Personalized recommendation via integrated diffusion on
+user-item-tag tripartite graphs. Physica A: Statistical Mechanics and its Applications, 2010.
+Appendix
+A
+A.1
+Crawl
+Selected shops
+1. http://store.taobao.com/shop/view shop-b22399989259942b7b66c99c175a5100.htm
+2. http://store.taobao.com/?shop id=56634
+3. http://store.taobao.com/?shop id=59495864
+4. http://store.taobao.com/?shop id=33483998
+5. http://store.taobao.com/?shop id=62997280
+6. http://store.taobao.com/?shop id=62800620
+7. http://liuzstyle-1.taobao.com/?spm=11020*pv.2-3JyCq.2-3rU2Br
+8. http://fsnz.tmall.com/shop/viewShop.htm
+9. http://justylenz.tmall.com/shop/viewShop.htm
+10. http://cfa.tmall.com/shop/viewShop.htm
+11. http://ousibo.tmall.com/shop/viewShop.htm
+12. http://bitnicha.tmall.com/shop/viewShop.htm
+13. http://huijiao.tmall.com/shop/viewShop.htm
+14. http://eptisonfs.tmall.com/shop/viewShop.htm?prt=1326439183738&prc=1
+15. http://yingxiang.tmall.com/shop/viewShop.htm
+11
+16. http://zhennuo.tmall.com/shop/viewShop.htm
+17. http://lanjue.tmall.com/shop/viewShop.htm
+18. http://store.taobao.com/view shop.htm?user number id=734349353
+19. http://dianliyou.tmall.com/shop/viewShop.htm
+20. http://yixuanmeier.tmall.com/shop/viewShop.htm
+21. http://oqueenz.tmall.com/shop/viewShop.htm
+22. http://goefir.tmall.com/shop/viewShop.htm
+A.2
+URL matchers
+http://item\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
+http://item\.taobao\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
+http://detail\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
+A.3
+url.fetcher.sh
+#!/bin/bash
+UA=’Some User Agent’
+item_counter=0
+touch url.list
+unlink url.list
+for store in ‘cat stores.txt‘; do
+echo "Fetch store information: $store"
+wget -q -U "$UA" -O - "$store" | cat > store.html.tmp
+for regex in ‘cat url.matchers‘; do
+for url in ‘cat store.html.tmp | grep -o -P "$regex"‘; do
+let item_counter=item_counter+1
+echo "
+$item_counter: $url"
+echo $url >> url.list
+done
+done
+unlink store.html.tmp
+done
+cat url.list | wc -l
+cat url.list | sort | uniq | cat > url.list.tmp
+mv url.list.tmp url.list
+cat url.list | wc -l
+A.4
+item.fetcher.sh
+#!/bin/bash
+UA=’Some User Agent’
+item_counter=0
+touch id.list
+unlink id.list
+for url in ‘cat url.list‘; do
+12
+let item_counter=item_counter+1
+id=‘echo $url | grep -o -P ’(?<=id=)\d+’‘
+echo $id >> id.list
+echo "Fetching item ($item_counter, id: $id): $url"
+item_dir="items/$id"
+rm -rf $item_dir
+mkdir $item_dir
+item_page="$item_dir/$id.html"
+wget -q -U "$UA" -O - "$url" > $item_page
+cat $item_page | wc -l
+done
+A.5
+image.fetcher.sh
+#!/bin/bash
+UA=’Some User Agent’
+item_counter=0
+for id in ‘cat id.list‘; do
+item_page=‘printf "items/%d/%d.html" $id $id‘
+item_desc=‘printf "items/%d/%d.txt" $id $id‘
+top_jpg_dir=‘printf "items/%d/top" $id‘
+top_jpg_list=‘printf "items/%d/top.txt" $id‘
+let item_counter=item_counter+1
+echo "$item_counter: Fetching item $id..."
+cat
+|
+|
+|
+cat
+|
+|
+|
+|
+$item_page
+grep -P -A 1 ’<ul class="attributes-list">’
+grep -o -P ’(?<=">).+?(?=</li>)’
+sed ’s/\&nbsp;//g’ > $item_desc
+$item_page
+grep -P -A 1 ’<div class="tb-pic tb-s40">’
+grep -o -P ’http://.+?\.jpg’
+sort
+uniq > $top_jpg_list
+rm -rf $top_jpg_dir
+mkdir $top_jpg_dir
+for jpg in ‘cat $top_jpg_list‘; do
+wget -q -U "$UA" -P "$top_jpg_dir" "$jpg"
+done
+done
+13
+

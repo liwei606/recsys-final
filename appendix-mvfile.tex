@@ -1,0 +1,34 @@
+\section{Classification}
+\lstset{language=Matlab}         
+ 
+\begin{lstlisting}[frame=single]
+
+function mvfile
+
+disp('');
+disp('**********Movefile**********');
+disp('');
+
+% File path
+pathstr = fileparts(which('mvfile'));
+dirname = fullfile(pathstr, 'recsys');
+filelist = dir(dirname);
+fid = fopen('result.txt');
+cline = fgetl(fid);
+while cline ~= -1
+    [sourcefile, remain] = strtok(cline);
+    [cluster, destfile] = strtok(remain);
+    printf('Sourcefile:%s,destfile:%s\n',sourcefile,destfile);
+    flag = exist(destfile, 'dir');
+    if (flag == 0)
+        mkdir(destfile);
+    end
+    printf('Move file %s to file %s\n',sourcefile,destfile);
+    movefile(sourcefile, destfile);
+    cline = fgetl(fid);
+end
+
+fclose(fid);
+disp('**********MoveFileDone!**********');
+
+\end{lstlisting}
