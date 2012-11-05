@@ -29,7 +29,7 @@ In our approach HAC is preferred because it could produce an ordering of the obj
 For images, at first they are preprocessed to gray-scale pictures with minimum disturbance from the background and the photo model, which is approached by morphological manipulation using OpenCV. Figure \ref{fig:image1} and Figure \ref{fig:image2} shows two examples of the images after preprocessing by OpenCV. We can see from the images that the disturbance of the background is mostly eliminated. Thus the features we used to further represent the images are mainly the apparel information itself.
 
 \subsubsection{Learn dictionary of images with K-SVD algorithm}
-K-SVD \cite{ksvd}algorithm, which generalizing the K-Means clustering process, is for adapting dictionaries in order to achieve sparse signal representations. Using an overcomplete dictionary matrix $\mathbf{D \in \mathbb{R}^{n\times K} }$ that contains $\mathbf{K}$ atoms, $\{d_j\}_{j = 1}^K $ , as its columns, it is assumed that a signal $\mathbf{y \in \mathbb{R}^n}$ can be represented as a sparse linear combination of these atoms. The representation of $y$ may either be exact $\mathbf{y = Dx}$, or approximate, $\mathbf{y} \approx \mathbf{Dx}$, satisfying $\|\mathbf{y - Dx}\|_2 \leq \epsilon$. The vector $x \in \mathbb{R}^K$ displays the representation coefficients of the signal $\mathbf{y}$. This, sparsest representation, is the solution of either 
+K-SVD \cite{ksvd}algorithm, which generalizes the K-Means clustering process, is for adapting dictionaries in order to achieve sparse signal representations. Using an overcomplete dictionary matrix $\mathbf{D \in \mathbb{R}^{n\times K} }$ that contains $\mathbf{K}$ atoms, $\{d_j\}_{j = 1}^K $ , as its columns, it is assumed that a signal $\mathbf{y \in \mathbb{R}^n}$ can be represented as a sparse linear combination of these atoms. The representation of $y$ may either be exact $\mathbf{y = Dx}$, or approximate, $\mathbf{y} \approx \mathbf{Dx}$, satisfying $\|\mathbf{y - Dx}\|_2 \leq \epsilon$. The vector $x \in \mathbb{R}^K$ displays the representation coefficients of the signal $\mathbf{y}$. This sparsest representation is the solution of either 
 \begin{equation}
 (P0 )\quad    min_x\|x0\|\quad subject\quad to \quad\mathbf{y = Dx}
 \end{equation}
@@ -39,7 +39,7 @@ K-SVD \cite{ksvd}algorithm, which generalizing the K-Means clustering process, i
 \end{equation}
 where $\|\cdot\|_0$ is the $l^0$ norm, counting the non zero entries of a vector.\\
 
-The K-SVD is an algorithm designed to find the dictionary $\mathbf{D}$ that yields sparse representations for a set of training signals. A full description of the algorithm is given in Figure \ref{fig:ksvd}.\\
+K-SVD is an algorithm designed to find the dictionary $\mathbf{D}$ which yields sparse representations for a set of training signals. A full description of the algorithm is given in Figure \ref{fig:ksvd}.\\
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{KSVD}
@@ -48,7 +48,7 @@ The K-SVD is an algorithm designed to find the dictionary $\mathbf{D}$ that yiel
 \end{figure}
 
 
-We fisrt classified the whole apparel items into 30 classifications according to their similarity in the textual labels in HAC, which can enhance the accuracy of the learned dictionary as well as the recommendation. The classifed code wrote in Matlab is attached in our appendix. We will learn dictionary from each apparel set. Consequently we will get 30 dictionaries corresponding to each apparel set. After we applied the K-SVD algorithm to the apparel images, we get the trained dictionary like Figure \ref{fig:dict} shows. The dictory acts as the base vector of all the images for that apparel set.
+We fisrt classified the whole apparel items into 30 classes according to their similarity in the textual labels obtained by HAC, which can enhance the accuracy of the dictionary as well as the recommendation. The classification code written in Matlab is attached in our appendix. We will learn dictionary from each apparel set. Consequently we will get 30 dictionaries corresponding to each apparel set. After we applied the K-SVD algorithm to the apparel images, we get the trained dictionary like Figure \ref{fig:dict} shows. The dictory acts as the base vector of all the images for that apparel set.
 
 
 \begin{figure}
@@ -60,10 +60,11 @@ We fisrt classified the whole apparel items into 30 classifications according to
 
 
 \subsubsection{Learn vectors of images}
-Then sparse coding is applied with respect to the learnt dictionary to delineate pictures by feature vectors. The vectors are the representation coefficients of the input image signal. Thus each image can be successfully represented and be ready for machine learning. It is also noted that if a garment contains several pictures, it would be treated as several garments of the same text labels and scores.
+Then sparse coding is applied with respect to the dictionary to delineate pictures by feature vectors. The vectors are the representation coefficients of the input image signal. Thus each image can be successfully represented and be ready for machine learning. It is also noted that if a garment contains several pictures, it would be treated as several garments of the same text labels and scores.
   
 \subsubsection{Comine vectors by weight}
-And finally the binary vector constructed from text labels would be concatenated to another vector which describes image features to represent the whole features. These two features will be combined by a certain weight. This weight is varied from different people as the focus on textual labels or on apparel images is varied from person to person. In our framework, we have proposed a novel method that can effectively learn the weight for a specific user. We test the recommend accuracy for the user with different weight and choose the one that will result the best accuracy. In other words, the weight we choose can best fit the model of the user's inclination to textual labels an image features.
+And finally the binary vector constructed from text labels would be concatenated to another vector which describes image features to represent the whole features. These two features will be combined by a certain weight. This weight may vary since the focus on textual labels or on apparel images could vary from person to person. In our framework, we have proposed a novel method that can effectively learn the weight for a specific user. We test the recommendation
+accuracy for the user with different weight and choose the one which will lead to the best accuracy. In other words, the weight we choose can best fit the model of the user's inclination to textual labels and image features.
 
 \subsection{Model user preference}
 In this section, we will illustrate how to model the user preference and why we choose this way to model it.
