@@ -19,6 +19,7 @@
 *.nlo
 *.out
 *.pdf
+!front.pdf
 *.pdfsync
 *.ps
 *.snm
