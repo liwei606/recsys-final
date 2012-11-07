@@ -1,4 +1,5 @@
 \section{Crawl}
+\lstset{language=bash}
 
 \subsection{Selected shops}\label{appsec:selected-shops}
 \begin{enumerate}
@@ -34,7 +35,7 @@ http://detail\.tmall\.com/item\.htm\?(spm=[-_0-9a-zA-Z.]+&)?id=\d+
 \end{verbatim}
 
 \subsection{\tt url.fetcher.sh}\label{appsec:url-fetcher}
-\begin{verbatim}
+\begin{lstlisting}[frame=single]
 #!/bin/bash
 
 UA='Some User Agent'
@@ -60,10 +61,10 @@ cat url.list | wc -l
 cat url.list | sort | uniq | cat > url.list.tmp
 mv url.list.tmp url.list
 cat url.list | wc -l
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{\tt item.fetcher.sh}\label{appsec:item-fetcher}
-\begin{verbatim}
+\begin{lstlisting}[frame=single]
 #!/bin/bash
 
 UA='Some User Agent'
@@ -87,10 +88,10 @@ for url in `cat url.list`; do
   wget -q -U "$UA" -O - "$url" > $item_page
   cat $item_page | wc -l
 done
-\end{verbatim}
+\end{lstlisting}
 
 \subsection{\tt image.fetcher.sh}\label{appsec:image-fetcher}
-\begin{verbatim}
+\begin{lstlisting}[frame=single]
 #!/bin/bash
 
 UA='Some User Agent'
@@ -106,11 +107,11 @@ for id in `cat id.list`; do
   echo "$item_counter: Fetching item $id..."
 
   cat $item_page
-    | grep -P -A 1 '<ul class="attributes-list">'
-    | grep -o -P '(?<=">).+?(?=</li>)'
+    | grep -P -A 1 '<ul class=.attributes-list.>'
+    | grep -o -P '(?<=.>).+?(?=</li>)'
     | sed 's/\&nbsp;//g' > $item_desc
   cat $item_page
-    | grep -P -A 1 '<div class="tb-pic tb-s40">'
+    | grep -P -A 1 '<div class=.tb-pic tb-s40.>'
     | grep -o -P 'http://.+?\.jpg'
     | sort
     | uniq > $top_jpg_list
@@ -122,4 +123,4 @@ for id in `cat id.list`; do
     wget -q -U "$UA" -P "$top_jpg_dir" "$jpg"
   done
 done
-\end{verbatim}
+\end{lstlisting}
