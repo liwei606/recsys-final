@@ -15,7 +15,7 @@
 \end{figure}
 
 \subsection{Model apparel item}
-In this section, we will mainly talk about how to model the apparel item from two dimensions. One is the textual labels and the other is the images affiliated to the apparel. The vectors of them will be combined by weight to characterize the textual labels and the image feature of the apparel.
+In this section, we will mainly talk about how to model the apparel item from two dimensions. One is the textual labels and the other is the images affiliated to the apparel. The vectors of them will be combined by weight to characterize the textual labels and the image features of the apparel.
 
 \subsubsection{Vectors of textual labels}
 The first step is to process text labels. A certain number of keywords could be picked to describe clothing characteristics like \emph{long sleeve} in sleeve length, \emph{leisure} in styles and \emph{cotton} in fabrics. Then a vector in binary is used to record such features for both clustering and feature selection. If the apparel item contains that feature in its textual label, we can mark 1 in the corresponding place of the textual vector. If not, mark 0.
@@ -23,7 +23,7 @@ The first step is to process text labels. A certain number of keywords could be 
 \subsubsection{HAC textual labels}
 In the next step, HAC (Hierarchical Agglomerative Clustering) was employed to reveal similarities among the text labels of different 
 garments, then we manually set a threshold as the number of clusters to divide all the garments to several groups, which serve as the basis for future classification.
-In our approach HAC is preferred because it could produce an ordering of the objects, which may be informative for future classification.  In addition, multiple measures of distance can be used, however for simplicity we only focus on Euclidean distance and regard the mean distance between elements of each cluster as the distance between clusters.
+In our approach HAC is preferred because it could produce an ordering of the objects, which may be informative for future classification.  In addition, multiple measures of distance can be used. However, for simplicity we only focus on Euclidean distance and regard the mean distance between elements of each cluster as the distance between clusters.
 
 \subsubsection{Preprocessing images}
 For images, at first they are preprocessed to gray-scale pictures with minimum disturbance from the background and the photo model, which is approached by morphological manipulation using OpenCV. Figure \ref{fig:image1} and Figure \ref{fig:image2} shows two examples of the images after preprocessing by OpenCV. We can see from the images that the disturbance of the background is mostly eliminated. Thus the features we used to further represent the images are mainly the apparel information itself.
@@ -48,7 +48,7 @@ K-SVD is an algorithm designed to find the dictionary $\mathbf{D}$ which yields 
 \end{figure}
 
 
-We fisrt classified the whole apparel items into 30 classes according to their similarity in the textual labels obtained by HAC, which can enhance the accuracy of the dictionary as well as the recommendation. The classification code written in Matlab is attached in our appendix. We will learn dictionary from each apparel set. Consequently we will get 30 dictionaries corresponding to each apparel set. After we applied the K-SVD algorithm to the apparel images, we get the trained dictionary like Figure \ref{fig:dict} shows. The dictory acts as the base vector of all the images for that apparel set.
+We fisrt classified the whole apparel items into 30 classes according to their similarity in the textual labels obtained by HAC, which can enhance the accuracy of the dictionary as well as the recommendation. The classification code written in Matlab is attached in our appendix. We will learn dictionary from each apparel set. Consequently we will get 30 dictionaries corresponding to each apparel set. After we applied the K-SVD algorithm to the apparel images, we get the trained dictionary like Figure \ref{fig:dict} shows. The dictionary acts as the base vector of all the images for that apparel set.
 
 
 \begin{figure}
@@ -70,7 +70,7 @@ accuracy for the user with different weight and choose the one which will lead t
 In this section, we will illustrate how to model the user preference and why we choose this way to model it.
 
 \subsubsection{Get user preference and model it}
-In our current way of collecting user preference, for every user, he or she will judge a garment based on personal preference with scores from 1 to 5. All the choices for clothing are recorded for future recommendation. Then based on the certain user's previous choices, the potential high-score garments can be predicted and thus being recommended. On the other hand, in real E-commerce systems, the preference can be collected through some records of user actions, including scanning time, favorite items, purcahse history or some clicking records, etc. These actions will be tracked by our framework and we use ratings to represent user preference. For instance, a user's favorite items would have a higher rating than other items who is not in his favorite items set but with the similar scanning time or clicking records. However, we are still on the way to quantify the exact rating from these actions. 
+In our current way of collecting user preference, for every user, he or she will judge a garment based on personal preference with scores from 1 to 5. All the choices for clothing are recorded for future recommendation. Then based on the certain user's previous choices, the potential high-score garments can be predicted and thus being recommended. On the other hand, in real E-commerce systems, the preference can be collected through some records of user actions, including scanning time, favorite items, purcahse history or some clicking records, etc. These actions will be tracked by our framework and contribute to the overall ratings. For instance, some items may have higher ratings if they are in his/her favorite item sets and with the similar scanning time or clicking records. However, we are still on the way to quantify the exact rating from these actions. 
   
 \subsubsection{Map apparel item to user preference}
 Once we get the user's preferences (scores) on some garments, the relationships between these garments and their scores on this particular user have been established, which are serving as a training set.
