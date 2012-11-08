@@ -1,0 +1,70 @@
+\documentclass[a4paper]{article}
+\usepackage[titletoc]{appendix}
+% http://faculty.uoit.ca/bohun/latex/margins.html
+\usepackage[a4paper,includeheadfoot,left=2.5cm,top=1.5cm,right=2.5cm,bottom=1.75cm]{geometry}
+\usepackage{CJKutf8}
+\usepackage{fancyhdr}
+\fancyhf{}
+\lhead{\includegraphics[width=90px]{sjtu}}
+\rhead{\begin{CJK}{UTF8}{gkai}第四期大学生创新活动项目研究论文\end{CJK}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\pagestyle{fancy}
+
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{color,graphicx,subfigure,enumerate,epsfig,epstopdf}
+\usepackage{pdfpages}
+
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  numbers=left,
+  numberstyle=\tiny,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  rulecolor=\color{black},
+  keywordstyle=\color{blue},
+  commentstyle=\color{green},
+  stringstyle=\color{red}
+}
+
+\newcommand{\etal}{\emph{et al.} }
+
+\title{A Framework for Personalized Apparel Recommendation}
+
+\author{
+Xiao Jia\\
+        \small Shanghai Jiao Tong University\\
+        \small \texttt{xjia@cs.sjtu.edu.cn}\\
+\and
+Junjia He\\
+        \small Shanghai Jiao Tong University\\
+        \small \texttt{hejunjia1911@gmail.com}\\
+\and
+Wei Li\\
+        \small Shanghai Jiao Tong University\\
+        \small \texttt{liwei606@gmail.com}\\
+}
+
+\date{}
+
+\begin{document}
+
+\includepdf{front.pdf}
+\setcounter{page}{1}
+
+\maketitle
+
+
+
+\newpage
+
+
+\input{Project_overview}
+
+
+\end{document}
